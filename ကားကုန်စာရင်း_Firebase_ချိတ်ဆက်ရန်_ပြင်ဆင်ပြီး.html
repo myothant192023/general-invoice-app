@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>အထွေထွေ စာရင်းဘောင်ချာ</title>
+<style>
+:root{--ink:#173b55;--line:#9eb8c5;--pale:#e8f4f3;--muted:#627784;--accent:#087f8c;--soft:#f5fbfa;--gold:#d5a64a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top left,#e2f4ef 0%,transparent 38%),linear-gradient(145deg,#edf6f5 0%,#f8fafb 48%,#e7eff2 100%);color:#183746;font-family:system-ui,-apple-system,"Noto Sans Myanmar","Myanmar Text",sans-serif}
+button,input,select{font:inherit}
+button{border:0;border-radius:12px;padding:10px 12px;font-weight:750;cursor:pointer;transition:transform .12s,box-shadow .12s}button:active{transform:scale(.98)}
+.primary{background:linear-gradient(135deg,#087f8c,#126273);color:white;box-shadow:0 4px 12px #087f8c30}.secondary{background:linear-gradient(135deg,#fff,#eaf4f2);color:#175766;border:1px solid #c9dfdc}
+.app{max-width:760px;margin:auto;padding:7px}
+.toolbar{display:flex;gap:6px;margin-bottom:7px;align-items:stretch}.toolbar button{flex:1;min-width:0;padding:4px 3px;font-size:11px;line-height:1.15;min-height:30px;border-radius:6px}
+.paper{position:relative;overflow:hidden;background:rgba(255,255,255,.98);border:1px solid #bfd6d2;padding:10px;border-radius:16px;box-shadow:0 12px 30px #214d4b16}.paper:before{content:"";display:block;height:6px;position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,#07565b,#087f8c 30%,#d5a64a 50%,#087f8c 70%,#07565b)}
+.paper:after{content:"✦  ✧  ✦";position:absolute;right:9px;top:7px;color:#d5a64a;font-size:10px;letter-spacing:3px;pointer-events:none}
+.paperhead{text-align:center;border:1px solid #d8c28e;border-bottom:3px double #b18b3e;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #e8dcb8;padding:7px 0 8px;margin:0 0 7px;background:linear-gradient(180deg,#f2faf8,#fff);border-radius:10px 10px 0 0}
+.brand{font-size:11px;font-weight:900;color:#087f8c;letter-spacing:.4px}.title{font-size:20px;font-weight:950;line-height:1.4;color:#173b55;text-shadow:0 1px #fff;letter-spacing:.2px}.title:after{content:"✦  ✦  ✦";display:block;color:#c99b3d;font-size:10px;letter-spacing:4px;margin-top:1px}
+.headfields{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:7px 0 9px;font-size:11px}
+.headfields label{display:flex;align-items:center;gap:5px;min-width:0}
+.headfields span{white-space:nowrap}
+.headfields input{width:100%;min-width:0;border:0;border-bottom:1px dotted var(--ink);border-radius:0;padding:3px 2px;background:transparent;color:var(--ink);outline:none;font-size:11px}.headfields input:focus{background:#f1f7ff;border-bottom:2px solid #4c91d2}
+.tablewrap{width:100%}table{width:100%;border-collapse:collapse;table-layout:fixed;color:var(--ink);font-size:10px}
+th,td{border:1.5px solid var(--line);padding:2px;overflow-wrap:anywhere}th{text-align:center;background:linear-gradient(180deg,#dff1ed,#cfe6e1);font-weight:850;height:30px;color:#174b56}td{height:29px;vertical-align:middle;background:#fff}tbody tr:nth-child(even) td{background:#f7fbfa}
+.c-no{width:8%}.c-name{width:35%}.c-qty{width:21%}.c-price{width:17%}.c-total{width:19%}td.no{text-align:center;font-weight:700}
+td input{display:block;width:100%;min-width:0;border:0;outline:none;background:transparent;color:#172b43;padding:2px 1px;border-radius:0;font-size:10px}td input:focus{background:#f0f7ff;box-shadow:inset 0 0 0 1px #8ab3e6}td .numinput{text-align:center}
+.amount{text-align:right;font-weight:700;font-size:9px;padding-right:2px}.namebox{position:relative}
+.suggestions{position:absolute;z-index:10;top:100%;left:0;right:0;background:white;border:1px solid #cbd8e8;box-shadow:0 5px 12px #0002;max-height:180px;overflow:auto}.suggestion{padding:9px 7px;border-bottom:1px solid #edf0f5;font-size:12px;cursor:pointer;color:#18304b;background:#fff}.suggestion:active,.suggestion:hover{background:#eaf3ff}
+.under{display:grid;grid-template-columns:1fr 42%;gap:6px;margin-top:7px;font-size:10px}.note{line-height:1.3;padding-top:2px}.totals{display:flex;flex-direction:column;gap:5px}
+.totalrow{border:1px solid #c8ded9;background:linear-gradient(135deg,#f8fcfb,#eaf5f2);border-radius:9px;padding:6px;display:flex;justify-content:space-between;align-items:center;gap:4px}.totalrow strong{white-space:nowrap}.totalrow input{width:90px;max-width:52%;border:0;min-width:0;text-align:right;background:transparent;color:var(--ink);font-weight:700}.totalrow:last-child{font-size:11px;font-weight:900;box-shadow:inset 3px 0 #d5a64a;background:linear-gradient(135deg,#e4f4ee,#d2ebe2);border-color:#78b7a8;color:#124e49}
+.smallnote{font-size:9px;color:var(--muted);text-align:center;margin:4px 0 1px}
+.producthead{display:grid;grid-template-columns:minmax(0,1fr) 44px 62px 70px 28px;gap:4px;font-size:10px;color:var(--muted);font-weight:700}
+.productrow{display:grid;grid-template-columns:minmax(0,1fr) 44px 62px 70px 28px;gap:4px;margin:5px 0;align-items:center}.productrow input,.productrow select{width:100%;min-width:0;padding:6px 3px;font-size:11px;border:1px solid #c9dfdc;border-radius:6px;background:#fff}.productrow button{padding:5px 2px}
+.savedcard{border:1px solid #d4deea;border-radius:7px;padding:6px 7px;margin:5px 0;background:#fff}.savedcard strong{font-size:11px;line-height:1.25}.savedinfo{font-size:10px;color:#68778a;margin:3px 0}.savedtotal{font-size:11px;font-weight:700;color:#174a8b;margin:3px 0 5px}.savedbuttons button{padding:5px 7px;font-size:10px;border-radius:7px}.daypreview{padding:5px 8px;font-size:10px;color:#68778a}.hidden{display:none!important}
+@media(max-width:380px){.toolbar{gap:3px;margin-bottom:3px}.toolbar button{padding:3px 2px;font-size:10px;min-height:28px}.app{padding:4px}.paper{padding:6px;border-radius:11px}.title{font-size:17px}.brand{font-size:10px}.headfields{font-size:10px;gap:4px 5px;margin:4px 0 5px}.headfields input{font-size:10px}table{font-size:9px}th,td{padding:1px}th{height:27px}td{height:25px}td input{font-size:9px;padding:1px}.amount{font-size:8px;padding-right:1px}.under{font-size:9px;grid-template-columns:1fr 44%;margin-top:4px}.totalrow{padding:3px}.totalrow input{width:58px}}
+@media print{@page{size:A4 portrait;margin:8mm}body{background:white}.app{max-width:none;padding:0}.toolbar,.smallnote,.noprint{display:none!important}.paper{border:1px solid #c8b477;box-shadow:none;padding:7mm;border-radius:0;background:#fff}.paper:before{height:5px}.paper:after{right:12mm;top:9mm}.paperhead{margin-top:2mm;padding:10mm 0 7mm;border:1px solid #d9c58f;border-bottom:3px double #b18b3e;background:#fbfaf4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.brand{font-size:12px}.title{font-size:25px}.headfields{margin-top:8mm;margin-bottom:7mm;font-size:12px;gap:8mm 10mm}.headfields input{font-size:12px}table{font-size:11px}th,td{padding:4px 3px}th{background:#d9eee8!important;border-color:#91b8b0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}td{height:8mm}tbody tr:nth-child(even) td{background:#f7faf8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.under{margin-top:8mm;font-size:11px}.totalrow{padding:8px;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}th{background:#dff1ed!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}td{height:28px}th{height:34px}}
+
+/* Premium visual refresh */
+:root{--ink:#123747;--line:#b8d2d2;--pale:#e5f4f1;--muted:#6b818a;--accent:#087f8c;--soft:#f4fbfa;--gold:#d7aa4d}
+body{background:radial-gradient(ellipse at 10% 0%,#d4f1e9 0%,transparent 34%),radial-gradient(ellipse at 100% 12%,#f9e8bd 0%,transparent 25%),linear-gradient(145deg,#eaf4f5 0%,#f8fbfc 48%,#e2eef0 100%)}
+.app{max-width:790px;padding:12px}
+.toolbar{gap:8px;margin-bottom:10px}
+.toolbar button{min-height:38px;padding:8px 7px;font-size:12px;line-height:1.25;border-radius:11px;box-shadow:0 4px 12px #174e5710}
+.primary{background:linear-gradient(135deg,#0a8d91,#12495c);box-shadow:0 6px 15px #087f8c30;color:#fff}
+.secondary{background:linear-gradient(135deg,#fff,#edf7f5);color:#145363;border:1px solid #c6dfdc;box-shadow:0 3px 9px #214d4b0c}
+.paper{border:1px solid #c7dcda;border-radius:20px;padding:14px;box-shadow:0 18px 45px #16474a18,0 2px 8px #16474a08}
+.paper:before{height:7px;background:linear-gradient(90deg,#103b4b,#0b9995 28%,#f0c86d 50%,#0b9995 72%,#103b4b)}
+.paper:after{top:12px;right:13px;font-size:12px;color:#d7aa4d;letter-spacing:4px}
+.paperhead{position:relative;text-align:center;border:1px solid #d9c27f;border-radius:15px;background:radial-gradient(ellipse at 50% 0%,#e2f6f0 0%,#fff 70%);box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #eadbb0,0 5px 14px #173b5510;padding:13px 8px 12px;margin:3px 0 12px}
+.brandlockup{display:flex;align-items:center;justify-content:center;gap:12px;max-width:470px;margin:auto}
+.logo-mark{width:76px;height:76px;flex:0 0 76px;filter:drop-shadow(0 5px 4px #12374724)}
+.logo-mark svg{display:block;width:100%;height:100%}
+.brandcopy{text-align:left;min-width:0}
+.brand{font-size:11px;font-weight:900;color:#0a8587;letter-spacing:1.3px;text-transform:uppercase}
+.title{font-size:clamp(19px,4.6vw,27px);font-weight:950;line-height:1.3;color:#123747;letter-spacing:.3px;text-shadow:0 1px #fff}
+.title:after{content:"✦  ━━━━━  ✦";display:block;color:#c79a3f;font-size:9px;letter-spacing:2px;margin-top:4px}
+.brandtag{font-size:10px;color:#627b7d;letter-spacing:.3px;margin-top:3px}
+.headfields{gap:9px 12px;margin:10px 1px 12px;font-size:11px}
+.headfields label{background:linear-gradient(135deg,#f8fcfb,#f1f8f7);border:1px solid #e0ece9;border-radius:9px;padding:5px 7px;min-height:34px}
+.headfields input{font-size:11px;border-bottom:1px dashed #a3c4c4}
+.headfields input:focus{background:#e9f7f6;border-bottom:2px solid #0b9995}
+th{background:linear-gradient(180deg,#e1f5f0,#cce8e2);color:#124c57;border-color:#a7cbc5;height:33px}
+th,td{border-width:1px}
+td{height:31px}
+tbody tr:nth-child(even) td{background:#f4faf8}
+td input:focus{background:#eaf7ff;box-shadow:inset 0 0 0 1px #68b4b3}
+.under{gap:9px;margin-top:10px;font-size:10px}
+.note{background:linear-gradient(135deg,#fbfdfc,#f4f9f8);border:1px dashed #c4d9d5;border-radius:10px;padding:9px;line-height:1.7}
+.totals{gap:6px}
+.totalrow{border:1px solid #d0e4df;background:linear-gradient(135deg,#fbfefd,#edf7f4);border-radius:10px;padding:7px 8px;min-height:33px}
+.totalrow:last-child{background:linear-gradient(135deg,#dff6ee,#c5e9df);border-color:#80b9a9;box-shadow:inset 4px 0 #d7aa4d,0 3px 9px #1b766c12;color:#104b47}
+.smallnote{font-size:10px;color:#71858c;margin:8px 0}
+.producthead,.productrow{grid-template-columns:minmax(0,1fr) 48px 65px 76px 30px;gap:6px}
+.productrow{margin:7px 0}
+.productrow input,.productrow select{padding:8px 6px;border-color:#c6dfdc;border-radius:9px}
+.savedcard{border:1px solid #d2e4e0;border-radius:12px;padding:10px;margin:8px 0;background:linear-gradient(135deg,#fff,#f7fcfb);box-shadow:0 4px 12px #173b5508}
+.savedcard strong{font-size:12px}
+.savedinfo{font-size:11px}
+.savedtotal{font-size:12px;color:#116e70}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #4dbab1;outline-offset:2px}
+@media(max-width:480px){.app{padding:7px}.paper{padding:9px;border-radius:15px}.paperhead{padding:10px 5px}.brandlockup{gap:8px}.logo-mark{width:61px;height:61px;flex-basis:61px}.brand{font-size:9px;letter-spacing:.7px}.title{font-size:18px}.brandtag{font-size:8px}.toolbar{gap:5px}.toolbar button{font-size:10px;padding:6px 3px;min-height:34px}.headfields{gap:5px;margin:7px 0 9px}.headfields label{padding:4px 5px;font-size:10px}th{height:29px}td{height:27px}.note{padding:6px}.totalrow{padding:5px}.producthead,.productrow{grid-template-columns:minmax(0,1fr) 37px 54px 65px 26px;gap:4px}}
+@media print{body{background:#fff}.app{padding:0}.paper{padding:7mm;border-radius:0}.paperhead{padding:8mm 4mm 6mm;margin-bottom:7mm;background:#fbfdfb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.brandlockup{gap:12px}.logo-mark{width:68px;height:68px;flex-basis:68px}.brand{font-size:12px}.title{font-size:25px}.brandtag{font-size:10px}.headfields label{background:#fff;border-color:#e3ece8;padding:4px 6px}.note{background:#fff}.toolbar{display:none!important}}
+
+
+/* Compact header + contact-friendly mobile layout */
+.paperhead{padding:7px 8px 8px;margin:2px 0 7px}
+.logo-mark{width:56px;height:56px;flex-basis:56px}
+.brandlockup{gap:8px}
+.brand{font-size:9px;letter-spacing:.6px}
+.title{font-size:clamp(17px,4vw,22px);line-height:1.2}
+.title:after{margin-top:2px;font-size:8px;letter-spacing:1px}
+.brandtag{font-size:8px;margin-top:1px}
+.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:6px 0 8px;font-size:10px}
+.headfields label{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;gap:2px;min-height:44px;padding:4px 5px;border-radius:7px}
+.headfields label>span{font-size:9px;color:#58747b;line-height:1.1}
+.headfields input{font-size:11px;padding:2px 1px;min-height:20px}
+.headfields #receiver{width:100%}
+#pickContact{align-self:stretch;width:100%;margin:2px 0 0!important;padding:3px 2px!important;font-size:9px!important;line-height:1.1;border-radius:5px}
+@media(max-width:390px){.app{padding:4px}.paper{padding:7px}.paperhead{padding:6px 4px}.logo-mark{width:48px;height:48px;flex-basis:48px}.brandlockup{gap:6px}.brand{font-size:8px}.title{font-size:16px}.brandtag{font-size:7px}.headfields{gap:4px;margin:5px 0 6px}.headfields label{padding:3px 4px;min-height:41px}.headfields label>span{font-size:8px}.headfields input{font-size:10px}#pickContact{font-size:8px!important;padding:3px 1px!important}}
+@media print{.paperhead{padding:6mm 4mm 5mm}.logo-mark{width:60px;height:60px;flex-basis:60px}.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:4mm;margin:5mm 0}.headfields label{min-height:0;padding:3mm;background:#fff}.headfields label>span{font-size:10px}#pickContact{display:none!important}}
+
+/* Ultra-compact mobile layout: less scrolling, keep useful controls visible */
+.app{max-width:760px;padding:4px}
+.toolbar{gap:4px;margin-bottom:4px}
+.toolbar button{min-height:30px;padding:5px 3px;font-size:10px;border-radius:8px}
+.paper{padding:7px;border-radius:12px;box-shadow:0 5px 16px #16474a12}
+.paperhead{padding:4px 5px;margin:1px 0 5px;border-radius:8px}
+.brandlockup{gap:6px}
+.logo-mark{width:38px;height:38px;flex-basis:38px;filter:none}
+.brand{font-size:8px;letter-spacing:.2px}
+.title{font-size:15px;line-height:1.15}
+.title:after{display:none}
+.brandtag{display:none}
+.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin:4px 0 5px;font-size:9px}
+.headfields label{display:flex;flex-direction:row;align-items:center;gap:3px;min-height:27px;padding:2px 4px;border-radius:5px;background:#f8fcfb}
+.headfields label>span{font-size:8px;letter-spacing:-.2px}
+.headfields input{font-size:10px;min-height:18px;padding:1px 0;border-bottom:1px dotted #9ebfbd}
+#pickContact{width:auto;flex:0 0 auto;align-self:center;margin:0!important;padding:2px 4px!important;font-size:8px!important;white-space:nowrap}
+th{height:24px;font-size:9px}
+td{height:23px}
+th,td{padding:1px}
+td input{font-size:10px;padding:1px 0}
+.amount{font-size:9px}
+#addInvoiceRow{margin-top:2px!important;padding:3px 6px!important;font-size:9px!important}
+.under{grid-template-columns:.8fr 1.2fr;gap:4px;margin-top:4px;font-size:9px}
+.note{font-size:8px;line-height:1.3;padding:3px 0}
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.totalrow{min-height:25px;padding:3px 5px;border-radius:6px;font-size:9px;gap:2px}
+.totalrow strong{font-size:9px}
+.totalrow input{width:55px;font-size:9px;padding:0}
+.totalrow:last-child{font-size:10px}
+.smallnote{font-size:8px;margin:3px 0}
+@media(max-width:390px){
+ .app{padding:2px}.toolbar{gap:3px}.toolbar button{font-size:9px;min-height:28px;padding:4px 2px}
+ .paper{padding:5px;border-radius:9px}.paperhead{padding:3px;margin-bottom:4px}
+ .logo-mark{width:32px;height:32px;flex-basis:32px}.brand{font-size:7px}.title{font-size:13px}
+ .headfields{gap:2px;margin:3px 0 4px}.headfields label{min-height:25px;padding:1px 3px;gap:2px}.headfields label>span{font-size:7px}.headfields input{font-size:9px;min-height:16px}
+ #pickContact{font-size:7px!important;padding:2px!important}
+ th{font-size:8px;height:22px}td{height:21px}td input{font-size:9px}.amount{font-size:8px}
+ .under{grid-template-columns:.55fr 1.45fr}.note{font-size:7px}.totalrow{min-height:23px;padding:2px 3px;font-size:8px}.totalrow strong,.totalrow input{font-size:8px}
+}
+@media print{.app{padding:0}.paperhead{padding:8mm 4mm 6mm;margin-bottom:7mm}.logo-mark{width:68px;height:68px;flex-basis:68px}.brandtag{display:block}.title{font-size:25px}.title:after{display:block}.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:4mm;margin:5mm 0}.headfields label{display:flex;flex-direction:column;align-items:stretch;min-height:0;padding:3mm}.headfields label>span{font-size:10px}.headfields input{font-size:12px}.under{grid-template-columns:1fr 42%;margin-top:8mm;font-size:11px}.totals{display:flex;flex-direction:column;gap:6px}.totalrow{padding:8px;min-height:33px}.note{font-size:11px}.smallnote{display:none!important}}
+
+
+/* Compact practical layout: preserve the existing serial-number column and numbering */
+.app{max-width:700px;padding:3px}
+.toolbar{gap:4px;margin-bottom:4px}
+.toolbar button{min-height:29px;padding:4px 3px;font-size:10px;border-radius:7px;box-shadow:none}
+.paper{padding:7px;border-radius:10px;box-shadow:0 4px 14px #16474a10}
+.paper:before{height:4px}
+.paper:after{display:none}
+.paperhead{padding:4px 5px;margin:0 0 4px;border-radius:7px;box-shadow:none}
+.brandlockup{gap:6px}
+.logo-mark{width:34px;height:34px;flex-basis:34px;filter:none}
+.brand{font-size:8px;letter-spacing:.2px}
+.title{font-size:14px;line-height:1.15}
+.title:after,.brandtag{display:none}
+.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin:3px 0 4px;font-size:9px}
+.headfields label{min-height:24px;padding:1px 3px;gap:2px;border-radius:4px;box-shadow:none}
+.headfields label>span{font-size:7px;letter-spacing:-.2px}
+.headfields input{font-size:9px;min-height:16px;padding:0;border-bottom:1px dotted #9ebfbd}
+#pickContact{font-size:7px!important;padding:1px 3px!important;margin:0!important}
+th{height:21px;font-size:8px}
+th,td{padding:1px;border-width:1px}
+td{height:19px}
+td input{font-size:9px;padding:0;line-height:1.15}
+.amount{font-size:8px;padding-right:1px}
+#addInvoiceRow{margin-top:1px!important;padding:2px 5px!important;font-size:8px!important;line-height:1.2}
+.under{grid-template-columns:.65fr 1.35fr;gap:3px;margin-top:3px;font-size:8px}
+.note{font-size:7px;line-height:1.2;padding:1px 0}
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.totalrow{min-height:21px;padding:2px 4px;border-radius:4px;font-size:8px;gap:2px;box-shadow:none}
+.totalrow strong{font-size:8px}
+.totalrow input{width:48px;font-size:8px;padding:0}
+.totalrow:last-child{font-size:9px}
+.smallnote{font-size:7px;margin:2px 0}
+/* Product list rows: compact touch-friendly fields without changing the invoice's sequence numbers */
+#productsPage,#savedPage{padding:7px}
+#productsPage>div:first-child,#savedPage>div:first-child{gap:4px!important;margin-bottom:5px!important}
+#productsPage>div:first-child strong,#savedPage>div:first-child strong{font-size:11px;line-height:1.2}
+#productsPage>div:first-child button,#savedPage>div:first-child button{font-size:9px;padding:4px 6px;border-radius:6px;white-space:nowrap}
+#productsPage .smallnote{line-height:1.25;margin:3px 0 5px}
+.producthead{grid-template-columns:minmax(0,1fr) 34px 48px 62px 23px;gap:3px;font-size:8px;line-height:1.2}
+.productrow{grid-template-columns:minmax(0,1fr) 34px 48px 62px 23px;gap:3px;margin:2px 0;align-items:center}
+.productrow input,.productrow select{height:27px;padding:2px 3px;font-size:9px;border-radius:4px}
+.productrow button{height:27px;min-width:23px;padding:1px;font-size:12px;border-radius:4px}
+#addProduct,#saveProducts{margin-top:4px!important;padding:5px 6px!important;font-size:10px;min-height:30px;border-radius:6px}
+.savedcard{padding:5px;margin:4px 0}
+@media(max-width:390px){
+ .app{padding:2px}.toolbar{gap:2px}.toolbar button{font-size:8px;min-height:27px;padding:3px 1px}
+ .paper{padding:4px;border-radius:7px}.paperhead{padding:3px;margin-bottom:3px}
+ .logo-mark{width:29px;height:29px;flex-basis:29px}.brand{font-size:7px}.title{font-size:12px}
+ .headfields{gap:2px;margin:2px 0 3px}.headfields label{min-height:22px;padding:1px 2px;gap:1px}.headfields label>span{font-size:6.5px}.headfields input{font-size:8px;min-height:15px}
+ #pickContact{font-size:6px!important;padding:1px!important}
+ th{font-size:7px;height:19px}td{height:18px}td input{font-size:8px}.amount{font-size:7px}
+ .under{grid-template-columns:.5fr 1.5fr;gap:2px}.note{font-size:6.5px}.totalrow{min-height:19px;padding:2px;font-size:7px}.totalrow strong,.totalrow input{font-size:7px}
+ .producthead{grid-template-columns:minmax(0,1fr) 29px 42px 55px 21px;gap:2px;font-size:7px}
+ .productrow{grid-template-columns:minmax(0,1fr) 29px 42px 55px 21px;gap:2px}
+ .productrow input,.productrow select{height:25px;font-size:8px;padding:1px 2px}.productrow button{height:25px;min-width:21px}
+}
+@media print{.app{max-width:none;padding:0}.paper{padding:5mm}.paperhead{padding:5mm 3mm;margin-bottom:4mm}.logo-mark{width:48px;height:48px;flex-basis:48px}.title{font-size:20px}.headfields{grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm;margin:3mm 0}.headfields label{min-height:0;padding:2mm}.headfields label>span{font-size:9px}.headfields input{font-size:10px}th{height:6mm;font-size:9px}td{height:6mm}td input{font-size:9px}.under{margin-top:4mm;font-size:9px}.totals{display:grid;grid-template-columns:1fr 1fr;gap:2px}.totalrow{min-height:6mm;padding:2px 4px;font-size:9px}.totalrow strong,.totalrow input{font-size:9px}.note{font-size:8px}}
+
+
+/* Final premium polish: emerald-gold logo/header and compact ten-row invoice */
+.paperhead{background:linear-gradient(125deg,#073b46 0%,#075b64 48%,#0b3850 100%);border:1px solid #d7b45c;border-bottom:3px solid #d7b45c;box-shadow:inset 0 0 0 2px #ffffff12;padding:7px 8px;margin-bottom:6px;border-radius:12px;color:#fff}
+.paperhead .brand{color:#f1ce73;letter-spacing:1px;font-size:9px}
+.paperhead .title{color:#fff;font-size:clamp(16px,4.4vw,21px);text-shadow:0 2px 8px #001b2a80}
+.paperhead .brandtag{color:#d9f5f1;font-size:10px}
+.logo-mark{filter:drop-shadow(0 3px 5px #002a3a55)}
+.logo-mark svg{border-radius:50%}
+.headfields{gap:4px 8px;margin:5px 0 6px}
+.headfields label{gap:4px}
+#rows td{padding:2px 3px}
+#rows input,#rows select{min-height:24px;padding:2px 4px;font-size:11px}
+thead th{padding:5px 3px}
+@media(max-width:420px){
+ .paperhead{padding:5px 5px}
+ .paperhead .title{font-size:16px}
+ .paperhead .brandtag{font-size:9px}
+ .brandlockup{gap:7px}
+ .logo-mark{width:58px!important;height:58px!important;flex:0 0 58px!important}
+ .headfields{font-size:10px;gap:3px 5px}
+ #rows td{padding:2px 2px}
+ #rows input,#rows select{font-size:10px;min-height:23px;padding:2px}
+}
+
+
+/* Readable premium totals layout: editable charges centered, summary totals on the right */
+.under{grid-template-columns:minmax(0,34%) minmax(0,1fr)!important;align-items:stretch;gap:8px}
+.totals{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:repeat(3,minmax(34px,auto));gap:5px;align-content:stretch}
+.totalrow{min-width:0;padding:6px 8px;gap:5px;border-radius:10px}
+.totalrow span{font-size:11px;font-weight:700;line-height:1.25}
+.totalrow strong{font-size:13px;font-weight:800;overflow-wrap:anywhere}
+.totalrow input{width:100%;max-width:100%;min-width:0;font-size:13px;text-align:right;padding:2px 4px}
+.t-sub{grid-column:2;grid-row:1;background:linear-gradient(135deg,#e5f4ff,#f6fbff);border-color:#a8d8f3}
+.t-freight{grid-column:1;grid-row:1;background:linear-gradient(135deg,#e1f8f0,#f5fffb);border-color:#8bd8c0}
+.t-total{grid-column:2;grid-row:2;background:linear-gradient(135deg,#073b46,#087b7b);color:#fff;border-color:#d8b65d}
+.t-paid{grid-column:1;grid-row:2;background:linear-gradient(135deg,#fff0cb,#fffaf0);border-color:#edcf83}
+.t-due{grid-column:2;grid-row:3;background:linear-gradient(135deg,#ffe4e8,#fff5f6);border-color:#f0aab6;color:#8d1730}
+.paperhead .title{letter-spacing:.1px}
+body{color:#102b42}
+input,select,button,textarea{font-family:inherit}
+@media(max-width:520px){
+ .under{grid-template-columns:minmax(0,30%) minmax(0,1fr)!important;gap:5px}
+ .totals{gap:4px;grid-template-rows:repeat(3,minmax(32px,auto))}
+ .totalrow{padding:5px 5px;gap:3px}
+ .totalrow span{font-size:10px}
+ .totalrow strong,.totalrow input{font-size:12px}
+}
+
+
+/* Small readability boost only: preserve the existing design and keep the page within the phone width. */
+html, body { width:100%; max-width:100%; overflow-x:hidden; }
+.app { width:100%; max-width:790px; padding:8px; }
+.paper { width:100%; }
+.brand { font-size:12px; }
+.title { font-size:22px; }
+.headfields { font-size:12px; }
+.headfields input { font-size:12px; }
+table { font-size:11px; }
+th, td { padding:3px 2px; }
+td input { font-size:11px; }
+.amount { font-size:10px; }
+.under { font-size:11px; }
+.totalrow { font-size:11px; }
+.totalrow:last-child { font-size:12px; }
+.producthead { font-size:11px; }
+.productrow input, .productrow select { font-size:12px; }
+.savedcard strong { font-size:12px; }
+.savedinfo, .savedbuttons button { font-size:11px; }
+@media(max-width:380px){
+  .app { padding:4px; }
+  .paper { padding:7px; }
+  .title { font-size:19px; }
+  .brand { font-size:11px; }
+  .headfields { font-size:11px; gap:4px 5px; }
+  .headfields input { font-size:12px; }
+  table { font-size:10px; }
+  th, td { padding:2px 1px; }
+  td input { font-size:11px; padding:2px 0; }
+  .amount { font-size:9px; }
+  .under { font-size:10px; grid-template-columns:minmax(0,1fr) 44%; }
+  .totalrow { padding:4px; gap:3px; }
+  .totalrow input { width:62px; font-size:12px; }
+  .toolbar { gap:3px; }
+  .toolbar button { font-size:10px; padding:4px 2px; }
+  .producthead { grid-template-columns:minmax(0,1fr) 38px 52px 60px 24px; gap:3px; font-size:9px; }
+  .productrow { grid-template-columns:minmax(0,1fr) 38px 52px 60px 24px; gap:3px; }
+  .productrow input, .productrow select { font-size:12px; padding:5px 2px; }
+}
+
+/* Give the receiver name more room and move Contacts into the compact voucher-number slot. */
+.headfields .receiver-field{grid-column:span 2;}
+.headfields .book-contact-slot{min-width:0;}
+.book-contact-row{display:flex;align-items:center;gap:4px;min-width:0;width:100%;}
+.book-contact-row #bookNo{flex:1 1 36px;width:36px;min-width:0;}
+.book-contact-row #pickContact{flex:0 0 auto;white-space:nowrap;font-size:9px!important;line-height:1.15;padding:5px 5px!important;margin:0!important;border-radius:6px;}
+@media(max-width:390px){.headfields .receiver-field{grid-column:span 2}.book-contact-row{gap:2px}.book-contact-row #pickContact{font-size:8px!important;padding:4px 3px!important}.book-contact-row #bookNo{font-size:10px;}}
+@media print{.book-contact-row #pickContact{display:none!important}.headfields .receiver-field{grid-column:span 2}.book-contact-row #bookNo{width:100%;}}
+
+
+/* Final balanced header layout: give the receiver name room and keep Contact beside it. */
+.headfields{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:5px 0 7px}
+.headfields label{min-width:0;display:flex;flex-direction:row;align-items:center;gap:5px;min-height:31px;padding:4px 6px}
+.headfields label>span{flex:0 0 auto;font-size:9px;white-space:nowrap}
+.headfields label input{flex:1 1 auto;width:1%;min-width:0;font-size:11px}
+.headfields .receiver-field{grid-column:auto;min-width:0}.headfields .receiver-field input{max-width:100%}
+.headfields .receiver-field input{min-width:0}
+.headfields .receiver-field #pickContact{flex:0 0 auto;width:auto;align-self:center;white-space:nowrap;font-size:9px!important;line-height:1.15;padding:5px 7px!important;margin:0!important;border-radius:6px}
+.headfields .book-contact-slot{grid-column:auto}
+.book-contact-row{display:block;width:100%}
+@media(max-width:390px){
+ .headfields{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin:4px 0 5px}
+ .headfields label{min-height:29px;padding:3px 4px;gap:3px}
+ .headfields label>span{font-size:8px;letter-spacing:0}
+ .headfields label input{font-size:10px;min-height:18px}
+ .headfields .receiver-field{grid-column:auto}
+ .headfields .receiver-field #pickContact{font-size:8px!important;padding:4px 5px!important}
+}
+@media print{.headfields{grid-template-columns:repeat(2,minmax(0,1fr));gap:4mm;margin:5mm 0}.headfields .receiver-field{grid-column:auto}.headfields .receiver-field #pickContact{display:none!important}.headfields label{display:flex;flex-direction:row;min-height:0;padding:3mm}.headfields label>span{font-size:10px}.headfields input{font-size:12px}}
+
+
+/* In-app phone chooser: tap the exact number instead of typing its index */
+.phonepick-backdrop{position:fixed;inset:0;background:#092b35a8;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}.phonepick-card{width:min(100%,420px);max-height:80vh;overflow:auto;background:#fff;border:1px solid #d5b45c;border-radius:18px;padding:18px;box-shadow:0 18px 55px #001c2b55;color:#123747}.phonepick-card h3{margin:0 0 6px;font-size:18px}.phonepick-card p{margin:0 0 12px;color:#627784;font-size:13px}.phonepick-option{display:block;width:100%;text-align:left;margin:7px 0;padding:13px 14px;border:1px solid #c8dfdc;border-radius:11px;background:#f4fbf9;color:#123747;font-size:16px}.phonepick-option:active{background:#dff5ee}.phonepick-cancel{display:block;margin:12px 0 0 auto;background:#edf2f3;color:#31505c}
+
+
+/* Header spacing adjustment: compact voucher sequence field and let other fields use the room. */
+.headfields .book-contact-slot{gap:3px;padding-left:4px;padding-right:4px;}
+.headfields .book-contact-slot>span{font-size:8px;letter-spacing:-.3px;}
+.headfields .book-contact-slot input#bookNo{flex:0 1 58px;width:58px;max-width:58px;text-align:center;padding-left:2px;padding-right:2px;}
+.headfields .receiver-field{min-width:0;}
+.headfields .receiver-field input{flex:1 1 0;width:0;}
+@media(max-width:390px){
+ .headfields .book-contact-slot>span{font-size:7px;}
+ .headfields .book-contact-slot input#bookNo{flex-basis:48px;width:48px;max-width:48px;font-size:9px;}
+}
+@media print{.headfields .book-contact-slot input#bookNo{flex:1 1 auto;width:100%;max-width:100%;text-align:left;}}
+
+</style>
+
+<style id="gold-premium-theme">
+:root{--ink:#3f3218!important;--line:#d8c38a!important;--pale:#fff5d8!important;--muted:#786b52!important;--accent:#b8862b!important;--soft:#fffaf0!important;--gold:#d4a747!important}
+body{background:radial-gradient(ellipse at 8% 0%,#fff0c2 0%,transparent 36%),radial-gradient(ellipse at 100% 12%,#f8e8c7 0%,transparent 28%),linear-gradient(145deg,#fffaf0 0%,#fffdf8 52%,#f3ead8 100%)!important;color:#3f3218!important}
+.paper{border-color:#d8c38a!important;box-shadow:0 12px 30px #73541a12!important}
+.paper:before{background:linear-gradient(90deg,#73501b,#c39435 28%,#f6df9c 50%,#c39435 72%,#73501b)!important}
+.paperhead{background:linear-gradient(125deg,#4b3715 0%,#8a6424 48%,#4b3715 100%)!important;border-color:#e5c56e!important;border-bottom-color:#e5c56e!important}
+.brand{color:#f6d98b!important}.title{color:#fffaf0!important}.title:after{color:#f6d98b!important}
+.primary{background:linear-gradient(135deg,#c99a37,#8b641e)!important;color:#fff!important;box-shadow:0 5px 13px #8b641e30!important;border-color:#d7b65f!important}
+.secondary{background:linear-gradient(135deg,#fffdf7,#f8efd9)!important;color:#6a4c19!important;border:1px solid #ddc98f!important}
+th{background:linear-gradient(180deg,#f8e8b9,#ecd18a)!important;color:#4b3715!important;border-color:#d6bb70!important}
+td{border-color:#ddcfaa!important}tbody tr:nth-child(even) td{background:#fffbf2!important}
+.headfields label{background:linear-gradient(135deg,#fffdf7,#faf2df)!important;border-color:#eadfbe!important}.headfields input:focus,td input:focus{background:#fff4d5!important;border-bottom-color:#c39435!important}
+.totalrow{border-color:#e3d2a6!important;background:linear-gradient(135deg,#fffdf7,#faf1db)!important}.totalrow:last-child{background:linear-gradient(135deg,#f8e7b5,#efd48a)!important;border-color:#cda548!important;box-shadow:inset 4px 0 #9b7023!important;color:#4b3715!important}
+.contact-banner{background:linear-gradient(120deg,#fff0c2,#fffaf0)!important;border-color:#ddbd69!important;color:#694b17!important}.contact-banner strong{color:#805a18!important}
+.savedcard{border-color:#e0d0a8!important;background:linear-gradient(135deg,#fffdf7,#fbf3df)!important}.savedtotal{color:#805a18!important}
+@media print{.paperhead{background:#5b431b!important}th{background:#f3dfaa!important}}
+</style>
+
+</head>
+<body>
+<div class="app">
+ <section id="cloudPanel" class="paper noprint" style="margin-bottom:10px;padding:12px;border:1px solid #d5b66b;background:#fffaf0">
+  <strong style="display:block;font-size:14px;margin-bottom:6px">☁️ Google Login နှင့် Cloud Sync</strong>
+  <p id="cloudStatus" class="smallnote" style="text-align:left;margin:4px 0 8px">အင်တာနက်ချိတ်ပြီး Google Login ဝင်ပါ။ ဖုန်းထဲကဒေတာကို အရင် Backup ထုတ်ထားပါ။</p>
+  <div id="cloudLoginArea" style="display:flex;gap:6px;flex-wrap:wrap"><button id="googleLogin" class="primary" type="button">Google ဖြင့် ဝင်ရန်</button></div>
+  <div id="cloudSetupArea" class="hidden" style="margin-top:8px">
+   <label style="display:block;margin:6px 0;font-size:12px">လုပ်ငန်းအမည်<input id="businessName" placeholder="ဥပမာ - ကျွန်ုပ်၏ ကုန်လုပ်ငန်း" style="width:100%;margin-top:3px"></label>
+   <label style="display:block;margin:6px 0;font-size:12px">ဆိုင်ခွဲ / ဂိုဒေါင်အမည်<input id="branchName" placeholder="ဥပမာ - ဆိုင်ခွဲ ၁" style="width:100%;margin-top:3px"></label>
+   <button id="createBusiness" class="primary" type="button">လုပ်ငန်းနှင့် ပထမဆိုင်ခွဲ ဖန်တီးရန်</button>
+  </div>
+  <div id="cloudWorkArea" class="hidden" style="margin-top:8px">
+   <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+    <label style="font-size:11px;flex:1;min-width:135px">ဆိုင်ခွဲရွေးရန်<select id="branchSelect" style="display:block;width:100%;margin-top:3px"></select></label>
+    <button id="addBranch" class="secondary" type="button">＋ ဆိုင်ခွဲထည့်</button>
+   </div>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button id="cloudSync" class="primary" type="button">☁️ ယခု Sync လုပ်ရန်</button><button id="cloudLogout" class="secondary" type="button">ထွက်ရန်</button></div>
+  </div>
+  <p class="smallnote" style="text-align:left;margin:8px 0 0">မှတ်ချက် - Google Login နဲ့ Cloud Sync အလုပ်လုပ်ရန် ဒီ HTML ကို website/hosting မှ ဖွင့်ရပါမယ်။ Firebase Rules မသတ်မှတ်ရသေးလျှင် Cloud ဒေတာကို မစတင်ပါနှင့်။</p>
+ </section>
+ <section id="invoicePage">
+  <main class="paper">
+   <header class="paperhead">
+    <div class="brandlockup">
+     <div class="logo-mark" aria-label="အထွေထွေ စာရင်းဘောင်ချာ Logo">
+      <svg viewBox="0 0 96 96" role="img" aria-label="ကုန်တင်ကားနှင့် လမ်းပုံ Logo">
+       <defs><linearGradient id="logoGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe8a0"/><stop offset="1" stop-color="#c58a27"/></linearGradient><linearGradient id="logoTeal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#23b6ad"/><stop offset="1" stop-color="#07505e"/></linearGradient></defs>
+       <circle cx="48" cy="48" r="45" fill="#103d4c"/><circle cx="48" cy="48" r="40" fill="none" stroke="url(#logoGold)" stroke-width="2.5"/><path d="M15 62h66" stroke="#e8bd62" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+       <path d="M21 59V36q0-3 3-3h30q3 0 3 3v23z" fill="url(#logoTeal)" stroke="#f6d98e" stroke-width="1.8"/><path d="M57 43h11l9 10v6H57z" fill="#f1c96c" stroke="#fff0c4" stroke-width="1.5"/><path d="M61 46h6l6 7H61z" fill="#c7f5f0"/><circle cx="32" cy="61" r="6.5" fill="#102c38" stroke="#f5d98b" stroke-width="2.4"/><circle cx="67" cy="61" r="6.5" fill="#102c38" stroke="#f5d98b" stroke-width="2.4"/><circle cx="32" cy="61" r="2" fill="#f5d98b"/><circle cx="67" cy="61" r="2" fill="#f5d98b"/>
+       <path d="M26 25l2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8z" fill="url(#logoGold)"/><path d="M70 22l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="url(#logoGold)"/>
+       <path d="M42 73l-4 7h7l-2 5 12-10h-7l3-2z" fill="#f3cf73"/>
+      </svg>
+     </div>
+     <div class="brandcopy"><div class="brand">PREMIUM • EMERALD & GOLD</div><div class="title">အထွေထွေ စာရင်းဘောင်ချာ</div><div class="brandtag">ယုံကြည်စိတ်ချရသော ကုန်ပို့ဝန်ဆောင်မှု</div></div>
+    </div>
+   </header>
+   <div class="headfields">
+    <label><span>အမည် —</span><input id="customer" aria-label="အမည်" placeholder="အမည်ရေးရန်"></label>
+    <label class="receiver-field"><span>လက်ခံသူ —</span><input id="receiver" list="receiverContacts" aria-label="လက်ခံသူ" placeholder="အမည်"><button type="button" id="pickContact" class="secondary noprint" aria-label="Contact ရွေးရန်">📇</button><datalist id="receiverContacts"></datalist></label>
+    <label><span>ရက်စွဲ —</span><input id="date" type="date" aria-label="ရက်စွဲ"></label>
+    <label class="receiver-phone-field"><span>လက်ခံဖုန်း —</span><input id="receiverPhone" type="tel" inputmode="tel" aria-label="လက်ခံသူဖုန်းနံပါတ်" placeholder="09xxxxxxxxx"></label>
+    <label class="book-contact-slot"><span>ဘောင်ချာစဉ် —</span><input id="bookNo" aria-label="ဘောင်ချာစဉ်" inputmode="numeric" placeholder="123"></label>
+    <label><span>ဖုန်း ၁</span><input id="ownPhone" type="tel" aria-label="ဖုန်း ၁" placeholder="09xxxxxxxxx"></label>
+    <label><span>ဖုန်း ၂</span><input id="ownPhone2" type="tel" aria-label="ဖုန်း ၂" placeholder="09xxxxxxxxx"></label>
+   </div>
+   <div class="tablewrap"><table><colgroup><col class="c-no"><col class="c-name"><col class="c-qty"><col class="c-price"><col class="c-total"></colgroup><thead><tr><th>စဉ်</th><th>ကုန်အမည်</th><th>အရေအတွက်</th><th>ဈေးနှုန်း</th><th>သင့်ငွေ</th></tr></thead><tbody id="rows"></tbody></table></div>
+   <div class="noprint" style="display:flex;justify-content:flex-end;margin-top:4px"><button id="addInvoiceRow" class="secondary" style="padding:4px 8px;font-size:10px">＋ အတန်းထပ်ထည့်</button></div>
+   <div class="under">
+    <div class="totals">
+     <div class="totalrow t-sub"><span>ကုန်ဖိုး</span><strong id="subtotal">0</strong></div>
+     <div class="totalrow t-freight"><span>ယခင်ကျန်ငွေ/ကုန်ပို့ခ</span><input id="freight" type="number" min="0" step="any" value="0" aria-label="ကုန်ပို့ခ"></div>
+     <div class="totalrow t-total"><span>ကျန်ငွေစုစုပေါင်း</span><strong id="total">0</strong></div>
+     <div class="totalrow t-paid"><span>ပေးငွေ</span><input id="paid" type="number" min="0" step="any" value="0" aria-label="ပေးငွေ"></div>
+    </div>
+   </div>
+  </main>
+  <div class="toolbar noprint"><button id="saveVoucher" class="primary">ဘောင်ချာ သိမ်းရန်</button><button id="print" class="secondary">🖨️ ပုံနှိပ်ရန် / PDF</button><label class="noprint" style="display:flex;align-items:center;gap:4px;font-size:10px">ပို့မည့် App <select id="shareApp" aria-label="ပို့မည့် App" style="max-width:115px;padding:5px;font-size:10px"><option value="sms">SMS</option><option value="viber">Viber</option><option value="messenger">Messenger</option><option value="wechat">WeChat</option><option value="tg">Telegram (TG)</option><option value="tiktok">TikTok</option></select></label><button id="shareVoucher" class="primary">💬 ပို့ရန်</button></div>
+ <div class="toolbar noprint">
+  <button id="invoiceTab" class="primary">ဘောင်ချာစာမျက်နှာ</button><button id="productsTab" class="secondary">ကုန်ပစ္စည်း List</button><button id="savedTab" class="secondary">သိမ်းထားသောဘောင်ချာ</button>
+ </div>
+  <div class="contact-banner noprint">လူကြီးမင်းတို့ လိုအပ်သော ဘောင်ချာ App များကို စိတ်တိုင်းကျ ရေးဆွဲဖန်တီးပေးပါသည်။<br><strong>☎ 09987252919 / 09257435345</strong></div>
+  <p id="saveNotice" class="smallnote noprint"></p>
+ </section>
+ <section id="productsPage" class="paper hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><strong>ကုန်ပစ္စည်း List / သတ်မှတ်ဈေးနှုန်း</strong><button id="backInvoice" class="secondary">ဘောင်ချာသို့ ပြန်ရန်</button></div>
+  <p class="smallnote" style="text-align:left">ကုန်အမည်၊ ယူနစ်အရေအတွက်၊ ယူနစ်နဲ့ ဈေးနှုန်းကို ထည့်ပြီး သိမ်းပါ။ ဘောင်ချာမှာ ကုန်အမည်ရွေးရင် သတ်မှတ်ဈေးနှုန်းကို အလိုအလျောက်ယူပေးပါမယ်။</p>
+  <div id="products"></div><button id="addProduct" class="secondary" style="width:100%;margin-top:8px">＋ ကုန်ပစ္စည်းအသစ်</button><button id="saveProducts" class="primary" style="width:100%;margin-top:8px">ကုန် List သိမ်းရန်</button>
+ </section>
+ <section id="savedPage" class="paper hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><strong>သိမ်းထားသော ဘောင်ချာများ / အကြွေးစာရင်း</strong><button id="backFromSaved" class="secondary">ဘောင်ချာသို့ ပြန်ရန်</button></div>
+  <div id="debtSummary"></div><p class="smallnote" style="text-align:left">ကြည့်ချင်သော စာရင်းအမျိုးအစားကို နှိပ်ပါ။ ရက်စွဲကိုနှိပ်မှ ထိုနေ့ဘောင်ချာများ ပေါ်လာပါမည်။</p><div id="savedList"></div>
+  <div class="noprint" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><button id="exportData" class="secondary">ဒေတာ Backup ထုတ်ရန်</button><button id="importData" class="secondary">Backup ပြန်သွင်းရန်</button><input id="importFile" type="file" accept="application/json,.json" class="hidden"></div>
+ </section>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const $=id=>document.getElementById(id), fmt=n=>(Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:2});
+const defaults=[{name:'ရွှေမေမေ',price:500,unit:'ဖာ',unitQty:1},{name:'ကုန်အသစ်',price:700,unit:'ခု',unitQty:1},{name:'နောက်ကုန်',price:300,unit:'ပုံး',unitQty:1}];
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}function persist(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){alert('ဖုန်းထဲတွင် သိမ်းဆည်းရန် နေရာမလုံလောက်နိုင်ပါ။ Backup ထုတ်ထားပါ။')}}
+const norm=s=>String(s||'').trim().toLocaleLowerCase();
+let products=load('truckProductsInline',defaults), lines=load('truckDraftInline',null);
+if(!Array.isArray(lines)||!lines.length)lines=Array.from({length:10},()=>({name:'',qty:'',unit:'ခု',price:''}));
+lines=lines.map(x=>({name:String(x.name||''),qty:x.qty??'',unit:x.unit||'ခု',price:x.price??''}));
+/* Hide unused trailing rows from older 10-row drafts, but preserve any entered items. */
+while(lines.length>10 && !lines[lines.length-1].name && !String(lines[lines.length-1].qty||'').trim() && !String(lines[lines.length-1].price||'').trim())lines.pop();
+while(lines.length<10)lines.push({name:'',qty:'',unit:'ခု',price:''});
+function saveLines(){persist('truckDraftInline',lines)}
+function sumLines(arr=lines){return arr.reduce((s,x)=>s+(Number(x.qty)||0)*(Number(x.price)||0),0)}
+function recalc(){const sub=sumLines(), freight=Math.max(0,Number($('freight').value)||0), paid=Math.max(0,Number($('paid').value)||0), total=sub+freight;lines.forEach((x,i)=>{const c=$('amount'+i);if(c)c.textContent=x.name?fmt((Number(x.qty)||0)*(Number(x.price)||0)):''});$('subtotal').textContent=fmt(sub);$('total').textContent=fmt(Math.max(0,total-paid));saveLines();persist('truckFreightDraftV1',freight);persist('truckPaidDraftV1',paid)}
+const units=['ပိသာ','ကျပ်သား','ပေါင်','ကီလို','အိတ်','ခု','ဖာ','ဗူး','ကဒ်','ပုံး','ဘူး','ထုပ်','လုံး','ချောင်း','စည်း','တွဲ','ခွက်','ပုလင်း','အတွဲ','အထုပ်','ပါကင်','သေတ္တာ','တန်'];
+function renderRows(){const root=$('rows');root.innerHTML='';lines.forEach((it,i)=>{const tr=document.createElement('tr'),no=document.createElement('td');no.className='no';no.textContent=i+1;const nameTd=document.createElement('td');nameTd.className='namebox';const name=document.createElement('input');name.value=it.name;name.autocomplete='off';name.setAttribute('aria-label','အတန်း '+(i+1)+' ကုန်အမည်');const sug=document.createElement('div');sug.className='suggestions hidden';
+function matches(){sug.innerHTML='';const q=norm(name.value);if(!q){sug.classList.add('hidden');return}products.filter(p=>norm(p.name).includes(q)).slice(0,8).forEach(p=>{const s=document.createElement('div');s.className='suggestion';s.textContent=p.name+' — '+fmt(p.price)+' / '+(p.unitQty||1)+' '+(p.unit||'ခု');s.onmousedown=e=>e.preventDefault();s.onclick=()=>{it.name=p.name;it.price=p.price;it.unit=p.unit||'ခု';name.value=p.name;price.value=p.price;sug.classList.add('hidden');recalc();qty.focus()};sug.append(s)});sug.classList.toggle('hidden',!sug.children.length)}
+name.oninput=()=>{it.name=name.value;const p=products.find(p=>norm(p.name)===norm(name.value));if(p){it.price=p.price;it.unit=p.unit||'ခု';price.value=p.price}matches();recalc()};name.onfocus=matches;name.onblur=()=>setTimeout(()=>sug.classList.add('hidden'),150);name.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();if(sug.firstElementChild){sug.firstElementChild.click();return}if(i===lines.length-1){const old=lines.length;lines.push({name:'',qty:'',unit:'ခု',price:''});saveLines();renderRows();requestAnimationFrame(()=>{const el=$('rows').querySelectorAll('tr')[old]?.querySelector('input');if(el)el.focus()})}else qty.focus()}};
+nameTd.append(name,sug);const qtyTd=document.createElement('td'),qty=document.createElement('input');qty.className='numinput';qty.type='number';qty.min='0';qty.step='any';qty.placeholder='0';qty.value=it.qty;qty.setAttribute('aria-label','အရေအတွက် '+(i+1));qty.oninput=()=>{it.qty=qty.value;recalc()};qtyTd.append(qty);
+const priceTd=document.createElement('td'),price=document.createElement('input');price.className='numinput';price.type='number';price.min='0';price.step='any';price.placeholder='0';price.value=it.price;price.setAttribute('aria-label','ဈေးနှုန်း '+(i+1));price.oninput=()=>{it.price=price.value;recalc()};priceTd.append(price);
+const amount=document.createElement('td');amount.className='amount';amount.id='amount'+i;amount.textContent=it.name?fmt((Number(it.qty)||0)*(Number(it.price)||0)):'';tr.append(no,nameTd,qtyTd,priceTd,amount);root.append(tr)});recalc()}
+function currentVoucher(){return {id:Date.now(),bookNo:$('bookNo').value||'',customer:$('customer').value||'',receiver:$('receiver').value||'',receiverPhone:$('receiverPhone').value||'',ownPhone:$('ownPhone').value||'',ownPhone2:$('ownPhone2').value||'',date:$('date').value||'',lines:JSON.parse(JSON.stringify(lines)),freight:Math.max(0,Number($('freight').value)||0),paid:Math.max(0,Number($('paid').value)||0),fee:Math.max(0,Number($('paid').value)||0),createdAt:new Date().toISOString()}}
+function voucherTotal(v){return sumLines(v.lines||[])+Math.max(0,Number(v.freight)||0)}
+function voucherPaid(v){return Math.max(0,Number(v.paid??v.fee)||0)}
+function renderSaved(selectedDate=null,mode="home"){const root=$('savedList');root.innerHTML='';const saved=load('truckSavedVouchersV2',[]);const debts=saved.map(v=>({...v,due:Math.max(0,voucherTotal(v)-voucherPaid(v))})).filter(v=>v.due>0);$('debtSummary').innerHTML='';
+if(mode==='home'&&!selectedDate){const datesBtn=document.createElement('button');datesBtn.className='primary';datesBtn.style.cssText='width:100%;margin:6px 0;padding:11px';datesBtn.textContent='📅 ရက်စွဲအလိုက် သိမ်းထားသော ဘောင်ချာများ';datesBtn.onclick=()=>renderSaved(null,'dates');const debtBtn=document.createElement('button');debtBtn.className='secondary';debtBtn.style.cssText='width:100%;margin:6px 0;padding:11px';debtBtn.textContent='💰 အကြွေးကျန်စာရင်း ကြည့်ရန်';debtBtn.onclick=()=>renderSaved(null,'debt');root.append(datesBtn,debtBtn);return}if(!saved.length){root.innerHTML='<p class="smallnote">ဘောင်ချာ မသိမ်းရသေးပါ။</p>';return}const groups={};saved.forEach(v=>{const d=v.date||'ရက်စွဲမရှိ';(groups[d]||(groups[d]=[])).push(v)});const dates=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
+if(selectedDate){const back=document.createElement('button');back.className='secondary';back.textContent='← ရက်စွဲစာရင်းသို့ ပြန်ရန်';back.onclick=()=>renderSaved(null,'dates');root.append(back);const h=document.createElement('h3');h.style.margin='8px 0';h.textContent=selectedDate+' ရက်နေ့ ဘောင်ချာများ ('+groups[selectedDate].length+' စောင်)';root.append(h);const delDateAll=document.createElement('button');delDateAll.className='secondary';delDateAll.style.cssText='color:#a32626;margin:0 0 8px;padding:6px 9px;font-size:10px';delDateAll.textContent='🗑️ '+selectedDate+' ရက်စွဲ ဘောင်ချာအားလုံးဖျက်ရန်';delDateAll.onclick=()=>{if(!confirm(selectedDate+' ရက်နေ့ရှိ ဘောင်ချာ '+groups[selectedDate].length+' စောင်လုံးကို အပြီးဖျက်မှာ သေချာပါသလား။'))return;persist('truckSavedVouchersV2',load('truckSavedVouchersV2',[]).filter(v=>(v.date||'ရက်စွဲမရှိ')!==selectedDate));renderSaved()};root.append(delDateAll);groups[selectedDate].slice().reverse().forEach(v=>{const card=document.createElement('div');card.className='savedcard';const total=voucherTotal(v),paid=voucherPaid(v),due=Math.max(0,total-paid);const title=document.createElement('strong');title.textContent='လက်ခံသူ: '+(v.receiver||'—')+' · ဘောင်ချာစဉ် '+(v.bookNo||'—');const info=document.createElement('div');info.className='savedinfo';info.textContent='📞 '+[v.ownPhone,v.ownPhone2].filter(Boolean).join(' / ')+' · ကုန် '+(v.lines||[]).filter(x=>x.name).length+' ကြောင်း';const sum=document.createElement('div');sum.className='savedtotal';sum.textContent='ကုန်ဖိုး '+fmt(sumLines(v.lines||[]))+' + ကုန်ပို့ခ '+fmt(v.freight||0)+' = စုစုပေါင်း '+fmt(total)+' · ပေးငွေ '+fmt(paid)+' · ကျန်ငွေ '+fmt(due);if(due>0)sum.style.color='#a32626';const buttons=document.createElement('div');buttons.className='savedbuttons';buttons.style.cssText='display:flex;gap:4px;flex-wrap:wrap';const view=document.createElement('button');view.className='secondary';view.textContent='ပြန်ကြည့် / ပြင်ရန်';view.onclick=()=>{loadVoucher(v);showPage('invoice')};const pay=document.createElement('button');pay.className='primary';pay.textContent='ငွေလက်ခံ / အကြွေးလျှော့';pay.onclick=()=>{const val=prompt('ယခု လက်ခံမည့်ငွေပမာဏ',String(due));if(val===null)return;const n=Number(val);if(!Number.isFinite(n)||n<0){alert('ငွေပမာဏ မှန်ကန်စွာထည့်ပါ။');return}const arr=load('truckSavedVouchersV2',[]),idx=arr.findIndex(x=>x.id===v.id);if(idx<0)return;const oldPaid=voucherPaid(arr[idx]);arr[idx].paid=oldPaid+n;arr[idx].fee=arr[idx].paid;arr[idx].lastPaymentAt=new Date().toISOString();persist('truckSavedVouchersV2',arr);renderSaved(selectedDate)};pay.disabled=due<=0;if(due<=0)pay.textContent='အကြွေးရှင်းပြီး';const del=document.createElement('button');del.className='secondary';del.textContent='ဖျက်ရန်';del.onclick=()=>{if(confirm('ဒီဘောင်ချာကို ဖျက်မှာ သေချာပါသလား။')){persist('truckSavedVouchersV2',load('truckSavedVouchersV2',[]).filter(x=>x.id!==v.id));renderSaved(selectedDate)}};buttons.append(view,pay,del);card.append(title,info,sum,buttons);root.append(card)});return}
+if(mode==='debt'){const backHome=document.createElement('button');backHome.className='secondary';backHome.textContent='← စာရင်းရွေးရန် ပြန်သွားမည်';backHome.onclick=()=>renderSaved();root.append(backHome);const debtBox=document.createElement('div');debtBox.className='totalrow';debtBox.innerHTML='<span>စုစုပေါင်း အကြွေးကျန်</span><strong>'+fmt(debts.reduce((s,v)=>s+v.due,0))+'</strong>';root.append(debtBox);const debtHeading=document.createElement('h3');debtHeading.style.margin='12px 0 5px';debtHeading.textContent='အကြွေးကျန်စာရင်း';root.append(debtHeading);if(!debts.length){const p=document.createElement('p');p.className='smallnote';p.style.textAlign='left';p.textContent='အကြွေးကျန် မရှိပါ။';root.append(p)}else debts.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).forEach(v=>{const c=document.createElement('div');c.className='savedcard';const t=document.createElement('strong');t.textContent=(v.receiver||v.customer||'အမည်မရှိ')+' · ဘောင်ချာ '+(v.bookNo||'—');const inf=document.createElement('div');inf.className='savedinfo';inf.textContent=(v.date||'ရက်စွဲမရှိ')+' · ဖုန်း '+[v.ownPhone,v.ownPhone2].filter(Boolean).join(' / ');const amt=document.createElement('div');amt.className='savedtotal';amt.style.color='#a32626';amt.textContent='ကျန်ငွေ: '+fmt(v.due);const b=document.createElement('button');b.className='secondary';b.textContent='ဘောင်ချာ / ငွေလက်ခံ';b.onclick=()=>{renderSaved(v.date||'ရက်စွဲမရှိ');setTimeout(()=>{const cards=[...$('savedList').querySelectorAll('.savedcard')];const target=cards.find(el=>el.textContent.includes('ဘောင်ချာစဉ် '+(v.bookNo||'—')));if(target)target.scrollIntoView({block:'center'})},0)};c.append(t,inf,amt,b);root.append(c)});return}
+const backDates=document.createElement('button');backDates.className='secondary';backDates.textContent='← စာရင်းရွေးရန် ပြန်သွားမည်';backDates.onclick=()=>renderSaved();root.append(backDates);const h=document.createElement('h3');h.style.margin='14px 0 5px';h.textContent='ရက်စွဲအလိုက် ဘောင်ချာများ';root.append(h);dates.forEach(date=>{const day=groups[date],wrap=document.createElement('div');wrap.style.cssText='border:1px solid #d4deea;border-radius:8px;margin:8px 0;overflow:hidden;background:white';const btn=document.createElement('button');btn.className='secondary';btn.style.cssText='width:100%;border-radius:0;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:7px 9px;font-size:11px';const l=document.createElement('span');l.textContent='📅 '+date;const count=document.createElement('strong');count.textContent=day.length+' စောင်  ›';btn.append(l,count);btn.onclick=()=>renderSaved(date);wrap.append(btn);root.append(wrap)})}
+function loadVoucher(v){$('bookNo').value=v.bookNo||'';$('customer').value=v.customer||'';$('receiver').value=v.receiver||'';$('receiverPhone').value=v.receiverPhone||'';$('ownPhone').value=v.ownPhone||'';$('ownPhone2').value=v.ownPhone2||'';$('date').value=v.date||'';$('freight').value=v.freight||0;$('paid').value=v.paid??v.fee??0;lines=JSON.parse(JSON.stringify(v.lines||[]));if(!Array.isArray(lines))lines=[];while(lines.length<10)lines.push({name:'',qty:'',unit:'ခု',price:''});saveLines();renderRows();recalc()}
+function renderProducts(){const root=$('products');root.innerHTML='';const head=document.createElement('div');head.className='producthead';['ကုန်အမည်','အရေ','ယူနစ်','ဈေးနှုန်း',''].forEach(t=>{const e=document.createElement('span');e.textContent=t;head.append(e)});root.append(head);products.forEach((p,i)=>{if(!p.unit)p.unit='ခု';if(!p.unitQty)p.unitQty=1;const row=document.createElement('div');row.className='productrow';const n=document.createElement('input');n.placeholder='ကုန်အမည်';n.value=p.name;const uq=document.createElement('input');uq.type='number';uq.min='1';uq.step='1';uq.value=p.unitQty||1;uq.setAttribute('aria-label','ယူနစ်အရေအတွက်');const un=document.createElement('select');un.setAttribute('aria-label','ကုန်ပစ္စည်းယူနစ်');units.forEach(u=>{const o=document.createElement('option');o.value=u;o.textContent=u;un.append(o)});un.value=p.unit;const pr=document.createElement('input');pr.type='number';pr.min='0';pr.value=p.price;pr.placeholder='ဈေးနှုန်း';const del=document.createElement('button');del.textContent='×';del.className='secondary';del.onclick=()=>{products.splice(i,1);renderProducts()};n.oninput=()=>p.name=n.value;uq.oninput=()=>p.unitQty=Math.max(1,Number(uq.value)||1);pr.oninput=()=>p.price=Math.max(0,Number(pr.value)||0);un.onchange=()=>p.unit=un.value;row.append(n,uq,un,pr,del);root.append(row)})}
+function showPage(which){const inv=which==='invoice',pro=which==='products';$('invoicePage').classList.toggle('hidden',!inv);$('productsPage').classList.toggle('hidden',!pro);$('savedPage').classList.toggle('hidden',which!=='saved');$('invoiceTab').className=inv?'primary':'secondary';$('productsTab').className=pro?'primary':'secondary';$('savedTab').className=which==='saved'?'primary':'secondary';window.scrollTo(0,0)}
+$('invoiceTab').onclick=()=>showPage('invoice');$('productsTab').onclick=()=>{renderProducts();showPage('products')};$('savedTab').onclick=()=>{renderSaved();showPage('saved')};$('backInvoice').onclick=$('backFromSaved').onclick=()=>showPage('invoice');
+$('addInvoiceRow').onclick=()=>{const old=lines.length;lines.push({name:'',qty:'',unit:'ခု',price:''});saveLines();renderRows();requestAnimationFrame(()=>{const el=$('rows').querySelectorAll('tr')[old]?.querySelector('input');if(el){el.focus();el.scrollIntoView({block:'nearest'})}})};
+$('print').onclick=()=>window.print();
+function voucherMessage(v=currentVoucher()){const items=(v.lines||[]).filter(x=>String(x.name||'').trim()).map((x,i)=>`${i+1}. ${x.name} | အရေအတွက် ${x.qty||0} ${x.unit||'ခု'} | ဈေး ${fmt(x.price)} | သင့်ငွေ ${fmt((Number(x.qty)||0)*(Number(x.price)||0))}`);const sub=sumLines(v.lines||[]),freight=Number(v.freight)||0,total=sub+freight,paid=voucherPaid(v);return `🧾 အထွေထွေ စာရင်းဘောင်ချာ\n━━━━━━━━━━━━━━\nရက်စွဲ: ${v.date||'—'}\nဘောင်ချာစဉ်: ${v.bookNo||'—'}\nအမည်: ${v.customer||'—'}\nလက်ခံသူ: ${v.receiver||'—'}\n📞 ${[v.ownPhone,v.ownPhone2].filter(Boolean).join(' / ')||'—'}\n━━━━━━━━━━━━━━\n${items.join('\n')||'ကုန်ပစ္စည်း မထည့်ရသေးပါ'}\n━━━━━━━━━━━━━━\nကုန်ဖိုး: ${fmt(sub)}\nကုန်ပို့ခ: ${fmt(freight)}\nစုစုပေါင်း: ${fmt(total)}\nပေးငွေ: ${fmt(paid)}\nကျန်ငွေ: ${fmt(Math.max(0,total-paid))}\n\nပို့သူမှ ပေးပို့သော ဘောင်ချာပါ။`}
+let receiverContacts=load('truckReceiverContactsV1',[]);
+function contactPhones(c){let p=c?(c.phones||c.phone||[]):[];if(!Array.isArray(p))p=[p];return [...new Set(p.map(x=>String(x||'').trim()).filter(Boolean))]}
+function choosePhone(name,phones){phones=contactPhones({phones});if(!phones.length)return Promise.resolve('');if(phones.length===1)return Promise.resolve(phones[0]);return new Promise(resolve=>{const back=document.createElement('div');back.className='phonepick-backdrop';const card=document.createElement('div');card.className='phonepick-card';const h=document.createElement('h3');h.textContent='📞 ဖုန်းနံပါတ်ရွေးပါ';const p=document.createElement('p');p.textContent=(name||'လက်ခံသူ')+' အတွက် ပို့လိုသောနံပါတ်ကို နှိပ်ရွေးပါ။';card.append(h,p);let done=false;const finish=value=>{if(done)return;done=true;back.remove();resolve(value)};phones.forEach((phone,i)=>{const b=document.createElement('button');b.type='button';b.className='phonepick-option';b.textContent=(i+1)+'.  '+phone;b.onclick=()=>finish(phone);card.append(b)});const cancel=document.createElement('button');cancel.type='button';cancel.className='phonepick-cancel';cancel.textContent='မရွေးတော့ပါ';cancel.onclick=()=>finish('');card.append(cancel);back.onclick=e=>{if(e.target===back)finish('')};back.append(card);document.body.append(back)})}
+function renderReceiverContacts(){const list=$('receiverContacts');list.innerHTML='';receiverContacts.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.label=contactPhones(c).join(' / ');list.append(o)})}
+function findReceiverContact(n){return receiverContacts.find(c=>norm(c.name)===norm(n))||null}
+async function useReceiverContact(name,phones){const number=await choosePhone(name,phones);if(!number)return false;const clean=number.replace(/[^0-9+]/g,'');$('receiver').value=name;$('receiverPhone').value=clean;persist('truckLastReceiverPhone',clean);persist('truckReceiverInline',name);persist('truckReceiverPhoneInline',clean);return true}
+$('receiver').addEventListener('change',async()=>{const c=findReceiverContact($('receiver').value);if(c){const ps=contactPhones(c);if(ps.length>1)await useReceiverContact(c.name,ps);else if(ps.length===1){const clean=ps[0].replace(/[^0-9+]/g,'');$('receiverPhone').value=clean;persist('truckLastReceiverPhone',clean);persist('truckReceiverPhoneInline',clean)}}});
+$('receiver').addEventListener('input',()=>{persist('truckReceiverInline',$('receiver').value);const c=findReceiverContact($('receiver').value);if(c){const ps=contactPhones(c);if(ps.length===1){const clean=ps[0].replace(/[^0-9+]/g,'');$('receiverPhone').value=clean;persist('truckLastReceiverPhone',clean);persist('truckReceiverPhoneInline',clean)}}});
+$('pickContact').onclick=async()=>{try{
+ if(!navigator.contacts||!navigator.contacts.select){const name=prompt('လက်ခံသူအမည် ရိုက်ထည့်ပါ။ ဖုန်း Contacts ကို ဒီ browser က တိုက်ရိုက်မဖွင့်နိုင်ပါ။');if(!name||!name.trim())return;const raw=prompt('ဖုန်း Contacts ထဲက ပို့လိုသောနံပါတ်များကို ကော်မာ (,) ခြားပြီး ထည့်ပါ။ ဥပမာ 09..., 09...');if(!raw||!raw.trim())return;const phones=raw.split(/[,;\n]/).map(x=>x.trim().replace(/[^0-9+]/g,'')).filter(Boolean);if(!phones.length)return;if(!await useReceiverContact(name.trim(),phones))return;receiverContacts=receiverContacts.filter(x=>norm(x.name)!==norm(name));receiverContacts.push({name:name.trim(),phones});persist('truckReceiverContactsV1',receiverContacts);renderReceiverContacts();return}
+ const a=await navigator.contacts.select(['name','tel'],{multiple:false});if(!a||!a.length)return;const name=(a[0].name||[])[0]||'',phones=[...new Set((a[0].tel||[]).map(x=>String(x).trim()).filter(Boolean))];if(!name||!phones.length){alert('Contact အမည်နဲ့ ဖုန်းနံပါတ် ပါမပါ စစ်ပါ။');return}if(!await useReceiverContact(name,phones))return;receiverContacts=receiverContacts.filter(x=>norm(x.name)!==norm(name));receiverContacts.push({name,phones});persist('truckReceiverContactsV1',receiverContacts);renderReceiverContacts()
+ }catch(e){alert('Contact Picker မရနိုင်ပါ။ Contact ခလုတ်ကို ပြန်နှိပ်ပြီး အမည်နဲ့ နံပါတ်များကို ထည့်နိုင်ပါတယ်။')}};
+$('shareVoucher').onclick=async()=>{let raw=$('receiverPhone').value.trim(),number='';if(raw){const ps=raw.split(/[,;\n]/).map(x=>x.trim().replace(/[^0-9+]/g,'')).filter(Boolean);number=await choosePhone($('receiver').value,ps);if(!number)return;number=number.replace(/[^0-9+]/g,'')}else{const c=findReceiverContact($('receiver').value);if(c){const ps=contactPhones(c);number=await choosePhone(c.name,ps);if(!number)return;number=number.replace(/[^0-9+]/g,'')}else{raw=prompt('လက်ခံသူဖုန်းနံပါတ်ကို ရိုက်ထည့်ပါ။ နံပါတ်များစွာရှိလျှင် ကော်မာခြားပါ။');if(raw===null||!raw.trim())return;const ps=raw.split(/[,;\n]/).map(x=>x.trim().replace(/[^0-9+]/g,'')).filter(Boolean);number=await choosePhone($('receiver').value,ps);if(!number)return;number=number.replace(/[^0-9+]/g,'');$('receiverPhone').value=number;persist('truckReceiverPhoneInline',number);persist('truckLastReceiverPhone',number)}}if(!number){alert('ဖုန်းနံပါတ်ထည့်ပါ။');return}persist('truckLastReceiverPhone',number);const app=$('shareApp').value,body=voucherMessage(),encoded=encodeURIComponent(body);if(app!=='sms'){try{await navigator.clipboard.writeText(body)}catch(e){}}if(app==='sms'){window.location.href='sms:'+number+'?body='+encoded;return}if(app==='viber'){window.location.href='viber://chat?number='+encodeURIComponent(number.replace(/^\+/,''));alert('Viber chat ဖွင့်ပြီးပါက ဘောင်ချာစာသားကို ကူးထည့်ပို့ပါ။');return}if(app==='tg'){window.location.href='tg://resolve?phone='+encodeURIComponent(number.replace(/[^0-9]/g,''))+'&text='+encoded;return}if(app==='messenger'){window.location.href='https://m.me/';alert('Messenger မှာ လက်ခံသူ chat ကိုဖွင့်ပြီး ဘောင်ချာစာသားကို ကူးထည့်ပို့ပါ။ ဖုန်းနံပါတ်တစ်ခုတည်းဖြင့် chat ကို အလိုအလျောက်ရွေး၍ မရနိုင်ပါ။');return}if(app==='wechat'){window.location.href='weixin://';alert('WeChat ဖွင့်ပြီး လက်ခံသူ chat ထဲသို့ ဘောင်ချာစာသားကို ကူးထည့်ပို့ပါ။');return}if(app==='tiktok'){window.location.href='https://www.tiktok.com/messages';alert('TikTok Messages မှာ လက်ခံသူကိုရွေးပြီး ဘောင်ချာစာသားကို ကူးထည့်ပို့ပါ။ TikTok က ဖုန်းနံပါတ်ဖြင့် chat ကို အလိုအလျောက်မရွေးပေးနိုင်ပါ။');return}};
+$('saveVoucher').onclick=()=>{const has=$('customer').value.trim()||$('receiver').value.trim()||lines.some(x=>String(x.name||'').trim()||String(x.qty||'').trim()||String(x.price||'').trim())||Number($('freight').value)>0||Number($('paid').value)>0;if(!has){alert('ဘောင်ချာထဲမှာ အချက်အလက်အရင်ထည့်ပေးပါ။');return}const v=currentVoucher(),saved=load('truckSavedVouchersV2',[]);saved.push(v);persist('truckSavedVouchersV2',saved);lines=Array.from({length:5},()=>({name:'',qty:'',unit:'ခု',price:''}));$('freight').value='0';$('paid').value='0';const no=String($('bookNo').value||'').trim();if(/^\d+$/.test(no))$('bookNo').value=String(Number(no)+1);['customer','receiver','ownPhone','ownPhone2','bookNo'].forEach(id=>persist(({customer:'truckCustomerInline',receiver:'truckReceiverInline',ownPhone:'truckOwnPhoneInline',ownPhone2:'truckOwnPhone2Inline',bookNo:'truckBookNoInline'})[id],$(id).value));saveLines();renderRows();$('saveNotice').textContent='ဘောင်ချာ သိမ်းပြီးပါပြီ။ ဘောင်ချာအသစ်ကို ဆက်ရေးနိုင်ပါပြီ။';window.scrollTo(0,0)};
+$('freight').oninput=recalc;$('paid').oninput=recalc;
+$('addProduct').onclick=()=>{products.push({name:'',price:0,unit:'ခု',unitQty:1});renderProducts()};$('saveProducts').onclick=()=>{products=products.filter(p=>String(p.name||'').trim());persist('truckProductsInline',products);renderProducts();alert('ကုန် List သိမ်းပြီးပါပြီ။')};
+$('exportData').onclick=()=>{const data={version:2,products:load('truckProductsInline',defaults),vouchers:load('truckSavedVouchersV2',[]),contacts:load('truckReceiverContactsV1',[]),exportedAt:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ကားကုန်ဘောင်ချာ_Backup.json';a.click();URL.revokeObjectURL(url)};
+$('importData').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.vouchers)||!Array.isArray(d.products))throw Error('format');if(!confirm('Backup ထဲက ကုန်စာရင်း၊ ဘောင်ချာများကို လက်ရှိဒေတာနှင့် အစားထိုးမည်။ ဆက်လုပ်မလား။'))return;persist('truckSavedVouchersV2',d.vouchers);persist('truckProductsInline',d.products);persist('truckReceiverContactsV1',Array.isArray(d.contacts)?d.contacts:[]);products=d.products;receiverContacts=Array.isArray(d.contacts)?d.contacts:[];renderReceiverContacts();renderProducts();renderSaved();alert('Backup ပြန်သွင်းပြီးပါပြီ။')}catch(err){alert('Backup ဖိုင်ကို ဖတ်မရပါ။ မှန်ကန်တဲ့ JSON Backup ကိုရွေးပါ။')}e.target.value=''};
+$('date').value=load('truckDateInline',new Date().toISOString().slice(0,10));$('customer').value=load('truckCustomerInline','');$('receiver').value=load('truckReceiverInline','');$('receiverPhone').value=load('truckReceiverPhoneInline',load('truckLastReceiverPhone',''));$('ownPhone').value=load('truckOwnPhoneInline','');$('ownPhone2').value=load('truckOwnPhone2Inline','');$('bookNo').value=load('truckBookNoInline','1');$('freight').value=load('truckFreightDraftV1',0);$('paid').value=load('truckPaidDraftV1',load('truckFeeDraftInline',0));
+$('receiverPhone').oninput=()=>{persist('truckReceiverPhoneInline',$('receiverPhone').value);persist('truckLastReceiverPhone',$('receiverPhone').value)};$('customer').oninput=()=>persist('truckCustomerInline',$('customer').value);$('ownPhone').oninput=()=>persist('truckOwnPhoneInline',$('ownPhone').value);$('ownPhone2').oninput=()=>persist('truckOwnPhone2Inline',$('ownPhone2').value);$('bookNo').oninput=()=>persist('truckBookNoInline',$('bookNo').value);$('date').onchange=()=>persist('truckDateInline',$('date').value);
+renderReceiverContacts();renderRows();renderProducts();
+
+// Firebase cloud sync: business-wide product catalogue and branch-specific vouchers.
+const firebaseConfig = {
+ apiKey: "AIzaSyDMa3DeersZGTpsgBr5-oLCZT3oiHjyi0U0",
+ authDomain: "my-shop-app-1fab5.firebaseapp.com",
+ projectId: "my-shop-app-1fab5",
+ storageBucket: "my-shop-app-1fab5.firebasestorage.app",
+ messagingSenderId: "887340393161",
+ appId: "1:887340393161:web:2f85af5afa3929abc16318",
+ measurementId: "G-ZDF0YLW2YE"
+};
+let fbApp=null,fbAuth=null,fbDb=null,cloudUser=null,activeBusinessId=localStorage.getItem('truckCloudBusinessId')||'',activeBranchId=localStorage.getItem('truckCloudBranchId')||'',cloudBusy=false;
+// Keep local-only data associated with the first Google account that syncs it, to reduce accidental cross-account uploads on a shared phone.
+function localDataBelongsToCurrentUser(){const owner=localStorage.getItem('truckCloudLocalOwnerUid');return !owner||!!(cloudUser&&owner===cloudUser.uid)}
+function branchVoucherKey(id){return 'truckSavedVouchersV2_branch_'+id}
+function activateLocalBranch(nextId){if(!nextId)return;const previous=localStorage.getItem('truckCloudActiveLocalBranch')||'';if(previous===nextId)return;if(previous){persist(branchVoucherKey(previous),load('truckSavedVouchersV2',[]))}else if(!localStorage.getItem(branchVoucherKey(nextId))){persist(branchVoucherKey(nextId),load('truckSavedVouchersV2',[]))}const target=load(branchVoucherKey(nextId),[]);persist('truckSavedVouchersV2',target);localStorage.setItem('truckCloudActiveLocalBranch',nextId);renderSaved()}
+try{if(window.firebase){fbApp=firebase.initializeApp(firebaseConfig);fbAuth=firebase.auth();fbDb=firebase.firestore();fbDb.enablePersistence({synchronizeTabs:true}).catch(()=>{});}}catch(e){console.warn('Firebase setup:',e)}
+function cloudStatus(t){const el=$('cloudStatus');if(el)el.textContent=t}
+function cloudUi(mode){$('cloudLoginArea').classList.toggle('hidden',mode!=='signedout');$('cloudSetupArea').classList.toggle('hidden',mode!=='setup');$('cloudWorkArea').classList.toggle('hidden',mode!=='work')}
+function businessRef(){return fbDb.collection('businesses').doc(activeBusinessId)}
+function branchInvoicesRef(){return businessRef().collection('branches').doc(activeBranchId).collection('invoices')}
+function cloudErr(e){console.error(e);cloudStatus('Cloud Sync မအောင်မြင်ပါ: '+(e.code||e.message||'အမှား')+'။ Firebase Rules / အင်တာနက်ကို စစ်ပါ။')}
+$('googleLogin').onclick=async()=>{try{if(!fbAuth)throw Error('Firebase SDK မတင်နိုင်ပါ။ အင်တာနက်ဖွင့်ပါ။');const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await fbAuth.signInWithRedirect(provider)}catch(e){cloudErr(e)}};
+if(fbAuth){fbAuth.getRedirectResult().catch(e=>cloudErr(e));fbAuth.onAuthStateChanged(async user=>{cloudUser=user;if(!user){cloudUi('signedout');cloudStatus('Google Login မဝင်ရသေးပါ။ ဖုန်းထဲတွင်သိမ်းထားသောဒေတာကို အရင်သုံးနိုင်ပါတယ်။');return}cloudStatus('ဝင်ထားသည်: '+(user.email||user.displayName||'Google user')+'။ လုပ်ငန်းစာရင်း စစ်နေသည်...');try{const q=await fbDb.collection('businesses').where('ownerUid','==',user.uid).get();if(!activeBusinessId||!(await businessRef().get()).exists){if(!q.empty){activeBusinessId=q.docs[0].id;localStorage.setItem('truckCloudBusinessId',activeBusinessId);await loadCloudBranches()}else{cloudUi('setup');$('businessName').value=user.displayName?user.displayName+' လုပ်ငန်း':'';$('branchName').value='ဆိုင်ခွဲ ၁';cloudStatus('ပထမဆုံးအကြိမ်ဖြစ်ပါတယ်။ လုပ်ငန်းအမည်နဲ့ ပထမဆိုင်ခွဲကို ဖန်တီးပါ။')}}else{await loadCloudBranches()}}catch(e){cloudErr(e)}})}
+async function loadCloudBranches(){if(!cloudUser||!activeBusinessId)return;const member=await businessRef().collection('members').doc(cloudUser.uid).get();if(!member.exists){activeBusinessId='';localStorage.removeItem('truckCloudBusinessId');cloudUi('setup');cloudStatus('ဒီ Google account အတွက် လုပ်ငန်းမတွေ့ပါ။ ကိုယ်ပိုင်လုပ်ငန်းအသစ် ဖန်တီးနိုင်ပါတယ်။');return}const snap=await businessRef().collection('branches').orderBy('createdAt').get();const sel=$('branchSelect');sel.innerHTML='';snap.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.textContent=d.data().name||d.id;sel.append(o)});if(!snap.empty){if(![...sel.options].some(o=>o.value===activeBranchId))activeBranchId=snap.docs[0].id;sel.value=activeBranchId;localStorage.setItem('truckCloudBranchId',activeBranchId);activateLocalBranch(activeBranchId);cloudUi('work');cloudStatus('Google Login ဝင်ထားသည်။ ကုန်ပစ္စည်းစာရင်းကို လုပ်ငန်းအတွင်းမျှဝေပြီး ဘောင်ချာများကို ဆိုင်ခွဲအလိုက် သိမ်းပါမည်။ ပြောင်းလဲမှုများကို Cloud သို့တင်ရန် Sync ကိုနှိပ်ပါ။')}else{cloudUi('setup');cloudStatus('ဆိုင်ခွဲမရှိသေးပါ။ လုပ်ငန်းအမည်နှင့် ပထမဆိုင်ခွဲ ဖန်တီးပါ။')}}
+$('createBusiness').onclick=async()=>{if(!cloudUser)return;const name=$('businessName').value.trim(),branch=$('branchName').value.trim()||'ဆိုင်ခွဲ ၁';if(!name){alert('လုပ်ငန်းအမည်ထည့်ပါ။');return}try{cloudBusy=true;cloudStatus('လုပ်ငန်းဖန်တီးနေသည်...');const ref=fbDb.collection('businesses').doc();await ref.set({name,ownerUid:cloudUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()});await ref.collection('members').doc(cloudUser.uid).set({uid:cloudUser.uid,role:'owner',email:cloudUser.email||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});const br=ref.collection('branches').doc();await br.set({name:branch,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cloudUser.uid});activeBusinessId=ref.id;activeBranchId=br.id;localStorage.setItem('truckCloudBusinessId',activeBusinessId);localStorage.setItem('truckCloudBranchId',activeBranchId);await loadCloudBranches();await cloudSyncAll(true)}catch(e){cloudErr(e)}finally{cloudBusy=false}};
+$('addBranch').onclick=async()=>{if(!activeBusinessId)return;const name=prompt('ဆိုင်ခွဲ / ဂိုဒေါင်အမည် ထည့်ပါ။');if(!name||!name.trim())return;try{const r=businessRef().collection('branches').doc();await r.set({name:name.trim(),createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cloudUser.uid});activeBranchId=r.id;localStorage.setItem('truckCloudBranchId',activeBranchId);await loadCloudBranches();await cloudSyncAll(true)}catch(e){cloudErr(e)}};
+$('branchSelect').onchange=async()=>{const next=$('branchSelect').value;activateLocalBranch(next);activeBranchId=next;localStorage.setItem('truckCloudBranchId',activeBranchId);await cloudSyncAll(false)};
+async function writeCollection(ref,items,keyField){const batch=fbDb.batch();items.forEach((item,i)=>{const key=String(item[keyField]??(Date.now()+'_'+i));const doc=ref.doc(key);const data={...item,_syncKey:key};batch.set(doc,data,{merge:true})});if(items.length)await batch.commit()}
+async function readCollection(ref){const s=await ref.get();return s.docs.map(d=>{const x=d.data();delete x._syncKey;return x})}
+async function cloudSyncAll(pushLocal=false){if(!cloudUser||!activeBusinessId||!activeBranchId||cloudBusy)return;cloudBusy=true;try{cloudStatus('Cloud Sync လုပ်နေသည်...');const prodRef=businessRef().collection('products'),invRef=branchInvoicesRef();const [remoteProducts,remoteVouchers]=await Promise.all([readCollection(prodRef),readCollection(invRef)]);const mayUseLocal=localDataBelongsToCurrentUser();const localProducts=mayUseLocal?load('truckProductsInline',defaults):[],localVouchers=mayUseLocal?load('truckSavedVouchersV2',[]):[];/* Merge by product name and voucher ID. Do not upload this phone's local cache to a different Google account. */const productMap=new Map();localProducts.forEach(p=>productMap.set(norm(p.name),p));remoteProducts.forEach(p=>productMap.set(norm(p.name),p));const mergedProducts=[...productMap.values()].filter(p=>String(p.name||'').trim());const voucherMap=new Map();localVouchers.forEach(v=>voucherMap.set(String(v.id),v));remoteVouchers.forEach(v=>voucherMap.set(String(v.id),v));const mergedVouchers=[...voucherMap.values()];if(mayUseLocal){localStorage.setItem('truckCloudLocalOwnerUid',cloudUser.uid);products=mergedProducts;persist('truckProductsInline',products);persist('truckSavedVouchersV2',mergedVouchers);renderProducts();renderSaved()}await writeCollection(prodRef,mergedProducts,'cloudId');await writeCollection(invRef,mergedVouchers,'id');cloudStatus('Sync ပြီးပါပြီ။ ကုန်ပစ္စည်းစာရင်းကို လုပ်ငန်းတစ်ခုလုံးမျှဝေပြီး ဘောင်ချာများကို '+($('branchSelect').selectedOptions[0]?.textContent||'ရွေးထားသောဆိုင်ခွဲ')+' အတွက် သီးခြားသိမ်းထားပါတယ်။ ဖုန်းထဲနှင့် Cloud ဒေတာကို ပေါင်းစည်းထားပါတယ်။')}catch(e){cloudErr(e)}finally{cloudBusy=false}}
+$('cloudSync').onclick=()=>cloudSyncAll(false);$('cloudLogout').onclick=async()=>{try{await fbAuth.signOut();activeBusinessId='';activeBranchId='';localStorage.removeItem('truckCloudBusinessId');localStorage.removeItem('truckCloudBranchId');cloudUi('signedout');cloudStatus('Google account မှ ထွက်ပြီးပါပြီ။ ဖုန်းထဲက ဒေတာကိုတော့ မဖျက်ပါ။')}catch(e){cloudErr(e)}};
+// Mark edits as local first; user manually syncs to avoid unexpected overwrites.
+const originalSaveVoucher=$('saveVoucher').onclick;$('saveVoucher').onclick=function(){originalSaveVoucher();if(cloudUser)cloudStatus('ဘောင်ချာကို ဖုန်းထဲတွင် သိမ်းပြီးပါပြီ။ Cloud သို့တင်ရန် “ယခု Sync လုပ်ရန်” ကိုနှိပ်ပါ။')};
+const originalSaveProducts=$('saveProducts').onclick;$('saveProducts').onclick=function(){originalSaveProducts();if(cloudUser)cloudStatus('ကုန် List ကို ဖုန်းထဲတွင် သိမ်းပြီးပါပြီ။ Cloud သို့တင်ရန် “ယခု Sync လုပ်ရန်” ကိုနှိပ်ပါ။')};
+</script>
+
+<style>
+/* Compact the entire invoice header, not just its input fields. */
+.paperhead{padding:5px 8px!important;margin:0 0 5px!important;border-radius:8px!important;min-height:0!important}
+.brandlockup{display:flex!important;align-items:center!important;gap:7px!important}
+.logo-mark{width:38px!important;height:38px!important;flex:0 0 38px!important}
+.logo-mark svg{width:100%!important;height:100%!important}
+.brandcopy{min-width:0!important}
+.brand{font-size:7px!important;line-height:1.1!important;letter-spacing:.4px!important;margin:0 0 2px!important}
+.title{font-size:15px!important;line-height:1.2!important;margin:0!important}
+.brandtag{font-size:7px!important;line-height:1.1!important;margin-top:2px!important}
+.paperhead:before,.paperhead:after{display:none!important}
+.headfields{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px 4px!important;margin:3px 0 5px!important;font-size:9px!important}
+.headfields label{min-width:0!important;min-height:23px!important;padding:2px 3px!important;gap:3px!important;border-radius:4px!important;box-shadow:none!important}
+.headfields label>span{font-size:7px!important;letter-spacing:0!important;white-space:nowrap!important}
+.headfields label input{min-width:0!important;width:1%!important;flex:1 1 0!important;font-size:9px!important;min-height:15px!important;padding:0!important}
+.headfields .receiver-field{grid-column:span 2!important}
+.headfields .receiver-phone-field{grid-column:span 1!important}
+.headfields label:has(#bookNo){grid-column:auto!important;max-width:none!important;width:auto!important;justify-self:stretch!important}
+.headfields label:has(#ownPhone),.headfields label:has(#ownPhone2){grid-column:auto!important;min-width:0!important}
+#bookNo{flex:0 1 34px!important;width:34px!important;max-width:34px!important;text-align:center!important}
+#pickContact{font-size:8px!important;padding:2px 3px!important;line-height:1!important}
+@media(max-width:390px){.paperhead{padding:4px 6px!important;margin-bottom:4px!important}.logo-mark{width:32px!important;height:32px!important;flex-basis:32px!important}.title{font-size:13px!important}.brandtag{font-size:6px!important}.headfields{gap:2px!important;margin:2px 0 4px!important}.headfields label{padding:1px 2px!important;min-height:21px!important}.headfields label>span{font-size:6.5px!important}.headfields label input{font-size:8px!important;min-height:14px!important}#bookNo{flex-basis:30px!important;width:30px!important;max-width:30px!important}}
+@media print{.paperhead{padding:4mm 3mm!important;margin:0 0 3mm!important}.logo-mark{width:38px!important;height:38px!important;flex-basis:38px!important}.title{font-size:16px!important}.brandtag{font-size:7px!important}.headfields{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2mm!important;margin:2mm 0 3mm!important}.headfields label{min-height:0!important;padding:1mm!important}.headfields label>span{font-size:8px!important}.headfields label input{font-size:9px!important}#pickContact{display:none!important}#bookNo{width:34px!important;max-width:34px!important}}
+</style>
+
+
+<style>
+/* Make the voucher item grid easier to read on a phone and on paper. */
+table{font-size:12px!important}
+th,td{padding:4px 3px!important;overflow-wrap:normal!important;word-break:normal!important}
+th{height:38px!important;line-height:1.35!important;font-size:11px!important}
+td{height:37px!important;vertical-align:middle!important}
+td input{font-size:12px!important;padding:4px 2px!important;line-height:1.35!important}
+.amount{font-size:11px!important;padding-right:3px!important;overflow-wrap:anywhere!important}
+.c-no{width:7%!important}.c-name{width:34%!important}.c-qty{width:21%!important}.c-price{width:18%!important}.c-total{width:20%!important}
+@media(max-width:390px){
+ table{font-size:11px!important}
+ th,td{padding:3px 2px!important}
+ th{font-size:10px!important;height:36px!important}
+ td{height:35px!important}
+ td input{font-size:11px!important;padding:3px 1px!important}
+ .amount{font-size:10px!important}
+}
+@media print{
+ table{font-size:12px!important}
+ th{font-size:11px!important;height:38px!important}
+ td{height:38px!important}
+ td input{font-size:12px!important}
+ .amount{font-size:11px!important}
+}
+</style>
+
+</body>
+</html>
+
+
+<style id="requested-layout-adjustments">
+/* Keep totals full width after removing note/signature; make amount inputs easier to use. */
+.under{grid-template-columns:minmax(0,1fr)!important;gap:0!important;margin-top:7px!important}
+.under .totals{width:100%;min-width:0}
+.totalrow.t-freight span{flex:1;min-width:0;white-space:normal}
+.totalrow.t-freight input,#paid{width:112px!important;max-width:62%!important;min-width:76px!important;font-size:11px!important;padding:3px 2px!important}
+@media(max-width:380px){.totalrow.t-freight input,#paid{width:88px!important;min-width:70px!important;font-size:10px!important}}
+@media print{.under{grid-template-columns:minmax(0,1fr)!important}.totalrow.t-freight input,#paid{width:112px!important;max-width:62%!important;font-size:11px!important}}
+</style>
+
+<style id="mobile-fullscreen-and-bottom-tabs">
+html,body{width:100%;min-height:100%;margin:0!important;padding:0!important;overflow-x:hidden!important}body{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}.app{width:100%!important;max-width:none!important;min-height:100dvh!important;margin:0!important;padding:8px!important;box-sizing:border-box!important}.paper{width:100%!important;max-width:none!important;box-sizing:border-box!important;margin:0 0 8px!important}.toolbar{width:100%!important;box-sizing:border-box!important;flex-wrap:wrap!important}.toolbar button{min-height:38px!important;font-size:12px!important}.contact-banner{margin:8px 0 10px;padding:12px 8px;text-align:center;border-radius:12px;background:linear-gradient(120deg,#e8f4ff,#f7fbff);border:1px solid #b7d6f7;color:#174d8b;font-size:12px;line-height:1.7;font-weight:600}.contact-banner strong{font-size:14px;letter-spacing:.2px}.smallnote{font-size:11px!important;line-height:1.6!important}@media(max-width:480px){.app{padding:4px!important}.paper{padding:7px!important;border-radius:10px!important}.toolbar{gap:4px!important;margin:5px 0!important}.toolbar button{font-size:11px!important;min-height:36px!important;padding:6px 4px!important}.contact-banner{font-size:11px;padding:10px 5px}.contact-banner strong{font-size:13px}table{font-size:12px!important}th{font-size:11px!important}td input{font-size:12px!important;min-height:27px!important}}@media print{.contact-banner,.toolbar{display:none!important}.app{padding:0!important}.paper{margin:0!important}}
+</style>
+
+<style id="high-contrast-total-fix">
+/* High contrast for the remaining-balance total */
+.t-total{background:linear-gradient(135deg,#3b2a0c 0%,#705018 100%)!important;color:#fff!important;border:2px solid #e5bd55!important;box-shadow:inset 4px 0 #ffd76b,0 3px 10px #4b371533!important}
+.t-total span,.t-total strong{color:#fff!important;font-weight:900!important;text-shadow:0 1px 2px #241700!important}
+.t-total strong{font-size:15px!important}
+@media(max-width:390px){.t-total span,.t-total strong{font-size:11px!important}}
+@media print{.t-total{background:#4b3715!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.t-total span,.t-total strong{color:#fff!important}}
+</style>
